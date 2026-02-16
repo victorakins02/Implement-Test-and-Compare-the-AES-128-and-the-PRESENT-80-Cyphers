@@ -73,6 +73,13 @@ public:
 
             } 
         }
+
+        void subBytes() {
+            for (int i = 0; i < 16; i++) {
+                // Look up the current byte in S-box and substitute
+                state[i] = sbox[state[i]];
+            }
+        }
     };
 
 const unsigned char AES::sbox[256] = {
@@ -100,9 +107,8 @@ const unsigned char AES::rcon[11] = { 0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 
 int main(){
     string plaintext = "0123456789abcdeffedcba9876543210";
     string master_key = "0f1571c947d9e8590cb7add6af7f6798";
-    string temp_key = "2b7e151628aed2a6abf7158809cf4f3c";
     
-    AES example(plaintext, temp_key);
+    AES example(plaintext, master_key);
 
     example.printKey(0, 16);
     example.keyExpansion();
