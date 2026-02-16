@@ -28,6 +28,13 @@ public:
             }
         }
 
+        void printKey(int start, int end) {
+            for (int i = start; i < end; i++) {
+                cout << hex << setfill('0') << setw(2) << (int)roundkeys[i] << " ";
+                if ((i + 1) % 4 == 0) cout << endl;
+            }
+        }
+
         void keyExpansion(){
             unsigned char end_key[4];
             int i = 16;
@@ -93,10 +100,14 @@ const unsigned char AES::rcon[11] = { 0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 
 int main(){
     string plaintext = "0123456789abcdeffedcba9876543210";
     string master_key = "0f1571c947d9e8590cb7add6af7f6798";
+    string temp_key = "2b7e151628aed2a6abf7158809cf4f3c";
     
-    AES example(plaintext, master_key);
+    AES example(plaintext, temp_key);
 
-    example.printState();
+    example.printKey(0, 16);
+    example.keyExpansion();
+    cout << endl;
+    example.printKey(16, 32);
 
     return 0;
 }
