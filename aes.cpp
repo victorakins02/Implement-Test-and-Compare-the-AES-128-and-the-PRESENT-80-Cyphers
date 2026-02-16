@@ -7,28 +7,35 @@ using namespace std;
 
 class AES {
 private:
-    unsigned char* text[16];
+    unsigned char state[16];
+    unsigned char roundkeys[176];
+
+    static const unsigned char sbox[256];
+    static const unsigned char rcon[11];
 
 public:
+    AES(string plaintextHex, string keyHex) {
+            for (int i = 0; i < 32; i += 2) {
+                state[i / 2] = (unsigned char)stoul(plaintextHex.substr(i, 2), nullptr, 16);
+                roundkeys[i / 2] = (unsigned char)stoul(keyHex.substr(i, 2), nullptr, 16);
+            }
+        }
 
-
-};
+        void printState() {
+            for (int i = 0; i < 16; i++) {
+                cout << hex << setfill('0') << setw(2) << (int)state[i] << " ";
+                if ((i + 1) % 4 == 0) cout << endl;
+            }
+        }
+    };
 
 int main(){
     string plaintext = "0123456789abcdeffedcba9876543210";
     string master_key = "0f1571c947d9e8590cb7add6af7f6798";
     
-    unsigned char hex_plaintxt[16];
-    unsigned char hex_master_key[16];
+    AES example(plaintext, master_key);
 
-    for(int i = 0; i < 32; i += 2){
-        string byteString = plaintext.substr(i, 2);
-        string byteKey = master_key.substr(i, 2);
-
-        hex_plaintxt[i / 2] = (unsigned char)stoul(byteString, nullptr, 16);
-        hex_master_key[i / 2] = (unsigned char)stoul(byteKey, nullptr, 16);
-
-    }
+    example.printState();
 
     return 0;
 }
