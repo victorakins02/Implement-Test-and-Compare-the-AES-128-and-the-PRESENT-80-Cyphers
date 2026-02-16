@@ -80,6 +80,37 @@ public:
                 state[i] = sbox[state[i]];
             }
         }
+
+        void shiftRows() {
+            unsigned char temp[16];
+
+            // Row 0: No shift
+            temp[0] = state[0]; 
+            temp[4] = state[4]; 
+            temp[8] = state[8]; 
+            temp[12] = state[12];
+
+            // Row 1: Shift left by 1
+            temp[1] = state[5];
+            temp[5] = state[9];
+            temp[9] = state[13];
+            temp[13] = state[1];
+
+            // Row 2: Shift left by 2
+            temp[2] = state[10];
+            temp[6] = state[14];
+            temp[10] = state[2];
+            temp[14] = state[6];
+
+            // Row 3: Shift left by 3
+            temp[3] = state[15];
+            temp[7] = state[3];
+            temp[11] = state[7];
+            temp[15] = state[11];
+
+            // Copy temp back to state
+            for (int i = 0; i < 16; i++) state[i] = temp[i];
+        }
     };
 
 const unsigned char AES::sbox[256] = {
