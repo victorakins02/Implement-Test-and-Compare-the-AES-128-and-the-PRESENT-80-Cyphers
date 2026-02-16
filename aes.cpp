@@ -27,6 +27,45 @@ public:
                 if ((i + 1) % 4 == 0) cout << endl;
             }
         }
+
+        void keyExpansion(){
+            unsigned char end_key[4];
+            int i = 16;
+            int rcon_location = 1;
+
+           while (i < 176) {
+                // Take last 4 bytes
+                for (int j = 0; j < 4; j++) {
+                    end_key[j] = roundkeys[i - 4 + j];
+                }
+
+                // If we are at the end of the array...
+                if (i % 16 == 0) {
+                    // Rotate the 4 bytes, e.g [0,1,2,3] -> [1,2,3,0]
+                    unsigned char k = end_key[0];
+                    end_key[0] = end_key[1];
+                    end_key[1] = end_key[2];
+                    end_key[2] = end_key[3];
+                    end_key[3] = k;
+
+                    // Substitute using the S-Box
+                    for (int j = 0; j < 4; j++) {
+                        end_key[j] = sbox[end_key[j]];
+                    }
+
+                    // XOR the first byte of the result with the Round Constant
+                    end_key[0] = end_key[0] ^ rcon[rcon_location];
+                    rcon_location++;
+                }
+
+                // XOR w(x) with w(y)
+                for (int j = 0; j < 4; j++) {
+                    roundkeys[i] = roundkeys[i - 16] ^ end_key[j];
+                    i++;
+                }
+
+            } 
+        }
     };
 
 const unsigned char AES::sbox[256] = {
