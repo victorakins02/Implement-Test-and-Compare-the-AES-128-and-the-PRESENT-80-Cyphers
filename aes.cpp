@@ -74,6 +74,13 @@ public:
             } 
         }
 
+        // Looks at what section of the roundkeys correspond with the round.
+        void addRoundKey(int round) {
+            for (int i = 0; i < 16; i++) {
+                state[i] = state[i] ^ roundkeys[round * 16 + i];
+            }
+        }
+
         void subBytes() {
             for (int i = 0; i < 16; i++) {
                 // Look up the current byte in S-box and substitute
@@ -137,6 +144,20 @@ public:
             }
 
             return res; 
+        }
+
+        void mixColumns() {
+            unsigned char temp[16];
+            for (int i = 0; i < 4; i++) {
+                int c = i * 4;
+                
+                //Mix column opperation
+                temp[c]   = gmul(state[c], 2)   ^ gmul(state[c+1], 3) ^ state[c+2]         ^ state[c+3];
+                temp[c+1] = state[c]           ^ gmul(state[c+1], 2) ^ gmul(state[c+2], 3) ^ state[c+3];
+                temp[c+2] = state[c]           ^ state[c+1]         ^ gmul(state[c+2], 2) ^ gmul(state[c+3], 3);
+                temp[c+3] = gmul(state[c], 3)   ^ state[c+1]         ^ state[c+2]         ^ gmul(state[c+3], 2);
+            }
+            for (int i = 0; i < 16; i++) state[i] = temp[i];
         }
     };
 
