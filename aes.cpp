@@ -111,6 +111,33 @@ public:
             // Copy temp back to state
             for (int i = 0; i < 16; i++) state[i] = temp[i];
         }
+        
+        // Function to perform multiplication to stay within Finite Field
+        unsigned char gmul(unsigned char a, unsigned char b) {
+
+            unsigned char res = 0; 
+
+            // Loop through each bit
+            for (int i = 0; i < 8; i++) { 
+                // If LSB is 1, add a to res
+                if (b & 1) {
+                    res ^= a; 
+                }
+
+                unsigned char hi_bit_set = a & 0x80; 
+                // shift bits to left by multiplying by 2
+                a <<= 1; 
+
+                // If overflows, add 1b to a. (like reset in modulus).
+                if (hi_bit_set) {
+                    a ^= 0x1b;
+                }
+                // Shift b to the right by dividing by 2.
+                b >>= 1;
+            }
+
+            return res; 
+        }
     };
 
 const unsigned char AES::sbox[256] = {
@@ -141,10 +168,7 @@ int main(){
     
     AES example(plaintext, master_key);
 
-    example.printKey(0, 16);
-    example.keyExpansion();
-    cout << endl;
-    example.printKey(16, 32);
-
+    example.printState();
+    
     return 0;
 }
