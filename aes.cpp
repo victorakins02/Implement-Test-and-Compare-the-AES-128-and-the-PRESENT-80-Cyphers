@@ -159,6 +159,27 @@ public:
             }
             for (int i = 0; i < 16; i++) state[i] = temp[i];
         }
+
+        void encrypt() {
+            // STEP 0: THE START
+            // We XOR the plaintext with the original Master Key first.
+            addRoundKey(0);
+
+            // STEP 1-9: THE MAIN ROUNDS
+            // These 9 rounds are identical.
+            for (int round = 1; round <= 9; round++) {
+                subBytes();     // Swap every byte
+                shiftRows();    // Shuffle the rows
+                mixColumns();   // Scramble the columns
+                addRoundKey(round); // XOR with that round's key
+            }
+
+            // STEP 10: THE FINISH
+            // The final round is slightly different: we SKIP MixColumns.
+            subBytes();
+            shiftRows();
+            addRoundKey(10);
+        }
     };
 
 const unsigned char AES::sbox[256] = {
