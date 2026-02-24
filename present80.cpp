@@ -53,6 +53,24 @@ public:
         }
         state = newState;
     }
+
+    void encrypt() {
+        for (int round = 1; round <= 31; round++) {
+            // Step 1: AddRoundKey (XOR state with the first 64 bits of the key)
+            state ^= start_key;
+            
+            // Step 2: S-Box
+            sBoxLayer();
+            
+            // Step 3: Bit Permutation
+            pLayer();
+            
+            // Step 4: Update the Key for the next round
+            updateKey(round);
+        }
+        // Step 5: Final XOR (Round 32 key application)
+        state ^= start_key;
+    }
     
 };
 
