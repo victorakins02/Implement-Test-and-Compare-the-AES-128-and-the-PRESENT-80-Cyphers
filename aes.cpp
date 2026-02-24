@@ -24,8 +24,10 @@ public:
         void printState() {
             for (int i = 0; i < 16; i++) {
                 cout << hex << setfill('0') << setw(2) << (int)state[i] << " ";
-                if ((i + 1) % 4 == 0) cout << endl;
+                //if ((i + 1) % 4 == 0) cout << endl;
+                
             }
+            cout << endl;
         }
 
         void printKey(int start, int end) {
@@ -180,6 +182,15 @@ public:
             shiftRows();
             addRoundKey(10);
         }
+
+        // Output
+        void printCiphertext() {
+            for (int i = 0; i < 16; i++) {
+                // This converts the byte into a 2-digit Hex string
+                cout << hex << setfill('0') << setw(2) << (int)state[i] << " ";
+            }
+            cout << endl;
+        }
     };
 
 const unsigned char AES::sbox[256] = {
@@ -205,12 +216,15 @@ const unsigned char AES::sbox[256] = {
 const unsigned char AES::rcon[11] = { 0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36 };
 
 int main(){
-    string plaintext = "0123456789abcdeffedcba9876543210";
+    string plaintext1 = "0123456789abcdeffedcba9876543210";
     string master_key = "0f1571c947d9e8590cb7add6af7f6798";
     
-    AES example(plaintext, master_key);
+    AES example(plaintext1, master_key);
 
     example.printState();
+    example.keyExpansion();
+    example.encrypt();
+    example.printCiphertext();
     
     return 0;
 }
