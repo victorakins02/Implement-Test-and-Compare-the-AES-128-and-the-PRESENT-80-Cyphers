@@ -9,6 +9,7 @@ private:
     uint64_t start_key;
     uint16_t end_key; 
     static const uint16_t s_box[16];
+    static const uint8_t p_table[64];
 
 public:
     PRESENT(uint64_t plaintext, uint64_t startkey, uint16_t endkey) 
@@ -41,10 +42,28 @@ public:
             }
         state = newState;
     }
+
+    void pLayer() {
+        uint64_t newState = 0;
+        for (int i = 0; i < 64; i++) {
+            // Extract the bit at position i
+            uint64_t bit = (state >> i) & 0x01;
+            // Move it to its new position defined by the table
+            newState |= (bit << p_table[i]);
+        }
+        state = newState;
+    }
     
 };
 
 const uint16_t PRESENT::s_box[16] = {0xC, 0x5, 0x6, 0xB, 0x9, 0x0, 0xA, 0xD, 0x3, 0xE, 0xF, 0x8, 0x4, 0x7, 0x1, 0x2};
+
+const uint8_t PRESENT::p_table[64] = {
+    0, 16, 32, 48, 1, 17, 33, 49, 2, 18, 34, 50, 3, 19, 35, 51,
+    4, 20, 36, 52, 5, 21, 37, 53, 6, 22, 38, 54, 7, 23, 39, 55,
+    8, 24, 40, 56, 9, 25, 41, 57, 10, 26, 42, 58, 11, 27, 43, 59,
+    12, 28, 44, 60, 13, 29, 45, 61, 14, 30, 46, 62, 15, 31, 47, 63
+};
 
 int main() {
     cout << "Hello! The PRESENT class is now ready." << endl;
