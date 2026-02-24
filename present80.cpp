@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdint>
+#include <iomanip>
 
 using namespace std;
 
@@ -71,6 +72,10 @@ public:
         // Step 5: Final XOR (Round 32 key application)
         state ^= start_key;
     }
+
+    uint64_t getState() {
+        return state;
+    }
     
 };
 
@@ -84,6 +89,14 @@ const uint8_t PRESENT::p_table[64] = {
 };
 
 int main() {
-    cout << "Hello! The PRESENT class is now ready." << endl;
+    uint64_t plaintext = 0xFFFFFFFFFFFFFFFF; // 64-bit plaintext
+    uint64_t startKey = 0xFFFFFFFFFFFFFFFF; // First 64 bits of key
+    uint16_t endKey = 0xFFFF;               // Last 16 bits of key
+
+    PRESENT cipher(plaintext, startKey, endKey);
+    cipher.encrypt();
+
+    cout << "Ciphertext: 0x" << hex << uppercase << setfill('0') << setw(16) << cipher.getState() << endl;
+
     return 0;
 }
