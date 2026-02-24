@@ -30,6 +30,17 @@ public:
         start_key ^= ((uint64_t)roundCounter >> 1);
         end_key ^= ((uint16_t)(roundCounter & 0x01) << 15);
     }
+
+    void sBoxLayer() {
+        uint64_t newState = 0;
+        for (int i = 0; i < 16; i++) {
+            // Extract the 4 bits (nibble)
+            uint8_t top4 = (state >> (i * 4)) & 0xF;
+            // Swap them and shift back to the correct position
+            newState |= ((uint64_t)s_box[top4] << (i * 4));
+            }
+        state = newState;
+    }
     
 };
 
